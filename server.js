@@ -4,6 +4,9 @@ console.log(sanity);
 
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
+const handlers = require('./handlers/handlers');
+
 const PORT = process.env.PORT || 8888;
 
 let errorPath = '/error.html';
@@ -16,46 +19,52 @@ const server = http.createServer((req, res) => {
   method = req.method;
 
   if (method === 'GET') {
-    uri = req.url;
-    getFiles(res, uri);
+    uri = req.url;      
+    handlers.getFiles(res, uri);
   
   } else if (method === 'POST') {
-    postFiles(res, uri);
+    req.on('data', (data) => {
+      console.log('data', data.toString());
+    });
   }
 
 }).listen(PORT);
 
 /* FUNCTIONS */
 
-// will take in the path requested and output the correct file
-function getFiles(response, path) {
-  // handles content type
-  if (path === '/css/styles.css') type = 'text/css';
-  else type = 'text/html';
+// will take in the route requested and output the correct file
+// function getFiles(response, route) {
+//   // handles content type
+//   if (route === '/css/styles.css') type = 'text/css';
+//   else type = 'text/html';
 
-  // handles navigation to main page
-  if (path === '/') path = `/index.html`;
+//   // handles navigation to main page
+//   if (route === '/') route = `/index.html`;
 
-  // sets the correct path to read from
-  source = `./public${path}`;
+//   // sets the correct route to read from
+//   source = path.join('public', route);
 
-  fs.readFile(source, format, (err, data) => {
-    // returns 404 page is there is a problem with reading the file
-    if (err) getFiles(response, `${errorPath}`);
+//   fs.readFile(source, format, (err, data) => {
+//     // returns 404 page is there is a problem with reading the file
+//     if (err) getFiles(response, errorPath);
     
-    else if (data) {response.writeHead(200, {'Content-Type' : `${type}`});
-      response.write(data, (err) => {
-
-        if (err) throw err;
-      });
+//     // if there is data, include a 200 and Content-Type header in the reponse header
+//     else if (data) {response.writeHead(200, {'Content-Type' : type});
+//       // then write the data to the response
+//       response.write(data, (err) => {
+//         // if an error is thrown , this would be a server side error???
+//         if (err) throw err;
+//       });
         
-      response.end();
+//       response.end();
     
-    }
-  });
-}
+//     }
+//   });
+// }
 
-function postFiles(response, path) {
+// function processPostRequest(request, route )
+
+function postFiles(response, route) {
   console.log('post');
 
   // fs.writeFile...
