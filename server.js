@@ -6,6 +6,7 @@ const http = require('http');
 const fs = require('fs');
 const PORT = process.env.PORT || 8888;
 
+let errorPath = '/error.html';
 let format  = 'UTF-8';
 let method, source, type, uri;
 
@@ -16,7 +17,10 @@ const server = http.createServer((req, res) => {
 
   if (method === 'GET') {
     uri = req.url;
-    readDirectoryFiles(res, uri);
+    getFiles(res, uri);
+  
+  } else if (method === 'POST') {
+    postFiles(res, uri);
   }
 
 }).listen(PORT);
@@ -24,23 +28,22 @@ const server = http.createServer((req, res) => {
 /* FUNCTIONS */
 
 // will take in the path requested and output the correct file
-function readDirectoryFiles(response, path) {
+function getFiles(response, path) {
   // handles content type
   if (path === '/css/styles.css') type = 'text/css';
   else type = 'text/html';
 
-  // handles navigation
+  // handles navigation to main page
   if (path === '/') path = `/index.html`;
 
+  // sets the correct path to read from
   source = `./public${path}`;
 
   fs.readFile(source, format, (err, data) => {
-    if (err) {
-      // gets rid of the favicon error and shoves it to console
-      console.log(err);
-    }
+    // returns 404 page is there is a problem with reading the file
+    if (err) getFiles(response, `${errorPath}`);
     
-    if (data) {response.writeHead(200, {'Content-Type' : `${type}`});
+    else if (data) {response.writeHead(200, {'Content-Type' : `${type}`});
       response.write(data, (err) => {
 
         if (err) throw err;
@@ -50,4 +53,11 @@ function readDirectoryFiles(response, path) {
     
     }
   });
+}
+
+function postFiles(response, path) {
+  console.log('post');
+
+  // fs.writeFile...
+
 }
