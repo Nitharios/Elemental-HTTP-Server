@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
       handlers.headRequest(res, uri);
       break;
     case 'GET':
-      handlers.getRequest(res, uri);
+      handlers.getRequest(req, res, uri);
       break;
     case 'POST':
       handlers.postRequest(req, res, uri);
