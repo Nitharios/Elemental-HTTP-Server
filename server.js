@@ -12,19 +12,17 @@ const server = http.createServer((req, res) => {
   console.log('Request Initiated');
 
   method = req.method;
+  uri = req.url;
 
   switch (method) {
     case 'HEAD':
       handlers.headRequest(res, uri);
       break;
     case 'GET':
-      uri = req.url;
       handlers.getRequest(res, uri);
       break;
     case 'POST':
-      req.on('data', (data) => {
-        console.log('data', data.toString());
-      });
+      handlers.postRequest(req, res, uri);
       break;
     default:
       handlers.getRequest(res, 'error');
