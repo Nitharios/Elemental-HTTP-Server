@@ -11,8 +11,10 @@ let method, uri;
 const server = http.createServer((req, res) => {
   console.log('Request Initiated');
 
-  method = req.method;
   uri = req.url;
+  
+  if (uri === '/elements') method = req.method;
+  else method = 'GET';
 
   switch (method) {
     case 'HEAD':
