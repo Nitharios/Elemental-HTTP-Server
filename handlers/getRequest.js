@@ -12,8 +12,7 @@ let errorPath = '/error.html';
 // will take in the route requested and output the correct file
 function getFiles(request, response, route) {
   // handles content type
-  console.log('test', request.headers.accept);
-
+  // console.log('test', request.headers.accept);
   if (route === '/css/styles.css') type = 'text/css';
   else type = 'text/html';
 
