@@ -6,11 +6,11 @@ const http = require('http');
 const fs = require('fs');
 const PORT = process.env.PORT || 8888;
 
-const server = http.createServer(req, res, () => {
+const server = http.createServer((req, res) => {
   console.log('req', req);
   console.log('res', res);
 
-  res.write("Welcome user!");
+  res.write('Hello User!');
   res.end();
 
 });
