@@ -12,7 +12,7 @@ let method, source, type, uri;
 const server = http.createServer((req, res) => {
   // console.log('req', req);
   // console.log('res', res);
-  console.log('Connection established!');
+  console.log('Request Initiated');
 
   method = req.method;
 
@@ -22,7 +22,7 @@ const server = http.createServer((req, res) => {
     readDirectoryFiles(res, uri);
 
   }
-}).listen(8888);
+}).listen(PORT);
 
 /* FUNCTIONS */
 
