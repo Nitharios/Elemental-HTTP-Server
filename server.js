@@ -13,26 +13,45 @@ const files = {
   'styles.css' : 'css/styles.css'
 };
 
+let format  = 'UTF-8';
+let method, source, uri;
+
 const server = http.createServer((req, res) => {
-  console.log('req', req);
-  console.log('res', res);
+  // console.log('req', req);
+  // console.log('res', res);
+  console.log('Someone connected!');
 
-  res.write('Hello User!');
-  res.end();
+  method = req.method;
 
-});
+  if (method === 'GET') {
+    console.log(method);
+    uri = req.url;
 
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+    readDirectoryFiles(res, uri);
+
+  }
+}).listen(8888);
 
 /* FUNCTIONS */
 
 // will take in the path requested and output the correct file
 function readDirectoryFiles(response, path) {
-  fs.readFile(path, (data, err) => {
+  
+  if (path === '/') path = `index.html`;
+  
+  if (files.hasOwnProperty(path)) {
+    if (path === 'styles.css') path = `css/${path}`;
+    source = `./public/${path}`;
+    console.log('source', source);
+  }
+
+  fs.readFile(source, format, (err, data) => {
     if (err) throw err;
 
-    else if (files.hasOwnProperty(path)) response.write(data);
+  response.write(data.toString(), (err) => {
+      if (err) throw err;
+
+      response.end();
+    });
   });
 }
