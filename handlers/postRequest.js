@@ -8,8 +8,11 @@ const getRequest = require('./getRequest');
 
 let type = 'application/json';
 let publicDir = './public/';
-let elementCount, fileName, formData, 
-htmlBody, newLink, newPath, parsedData;
+let index = './public/index.html';
+let elementCount = 2;
+
+let elementName, fileName, formData, 
+htmlBody, newLink, newHTML, newIndexHTML, parsedData;
 
 // __dirname
 
@@ -25,8 +28,10 @@ function postRequest(request, response) {
     // parses data into a collection of key and value pairs
     parsedData = qs.parse(formData);
 
+    elementName = parsedData.elementName;
+
     // boron.html
-    fileName = parsedData.elementName.toLowerCase() + '.html';
+    fileName = elementName.toLowerCase() + '.html';
     
     fs.stat(`./public/${fileName}`, (err, stats) => {
       if (err) console.log(err);
@@ -36,7 +41,7 @@ function postRequest(request, response) {
 
       } else {
 
-        // public/boron.html
+        // ./public/boron.html
         newPath = path.join(publicDir, fileName);
 
         // sets HTML body
@@ -51,10 +56,17 @@ function postRequest(request, response) {
 
           response.write("{'success' : true}", (err) => {
             if (err) throw err;
-      
             console.log('New element added!');
-            // getRequest(response, fileName);
-            response.end();
+            elementCount++;
+            newLink = linkGenerator(fileName, elementName);
+            newIndexHTML = indexRegenerator(elementCount, newLink);
+
+            fs.writeFile(index, newIndexHTML, (err) => {
+              if (err) throw err;
+              console.log('Index updated!');
+              // getRequest(response, fileName);
+              response.end();           
+            });
           });
         });
       }
@@ -80,7 +92,7 @@ return `<!DOCTYPE html>
 </html>`;
 }
 
-function indexRegenerator(data) {
+function indexRegenerator(elementCount, link) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,15 +111,15 @@ function indexRegenerator(data) {
     <li>
       <a href="/helium.html">Helium</a>
     </li>
-    ${newLink}
+    ${link}
   </ol>
 </body>
 </html>`;
 }
 
-function linkGenerator(link) {
+function linkGenerator(file, element) {
 return `    <li>
-      <a href="/helium.html">Helium</a>
+      <a href=/${file}>${element}</a>
     </li>`;
 }
 
