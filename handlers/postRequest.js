@@ -6,10 +6,12 @@ const path = require('path');
 const qs = require('querystring');
 const getRequest = require('./getRequest');
 
-let fileName, formData, htmlBody, newPath, parsedData;
 let type = 'application/json';
-// __dirname
 let publicDir = './public/';
+let elementCount, fileName, formData, 
+htmlBody, newLink, newPath, parsedData;
+
+// __dirname
 
 /* FUNCTIONS */
 
@@ -27,9 +29,9 @@ function postRequest(request, response) {
     fileName = parsedData.elementName.toLowerCase() + '.html';
     
     fs.stat(`./public/${fileName}`, (err, stats) => {
-      if (err) throw err;
+      if (err) console.log(err);
 
-      if (stats.isFile()) {
+      if (stats) {
         getRequest(response, 'error');
 
       } else {
@@ -51,6 +53,7 @@ function postRequest(request, response) {
             if (err) throw err;
       
             console.log('New element added!');
+            // getRequest(response, fileName);
             response.end();
           });
         });
@@ -75,6 +78,37 @@ return `<!DOCTYPE html>
   <p><a href="/">back</a></p>
 </body>
 </html>`;
+}
+
+function indexRegenerator(data) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elements</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>The Elements</h1>
+  <h2>These are all the known elements.</h2>
+  <h3>These are ${elementCount}</h3>
+  <ol>
+    <li>
+      <a href="/hydrogen.html">Hydrogen</a>
+    </li>
+    <li>
+      <a href="/helium.html">Helium</a>
+    </li>
+    ${newLink}
+  </ol>
+</body>
+</html>`;
+}
+
+function linkGenerator(link) {
+return `    <li>
+      <a href="/helium.html">Helium</a>
+    </li>`;
 }
 
 module.exports = postRequest;
