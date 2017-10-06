@@ -30,6 +30,10 @@ const server = http.createServer((req, res) => {
 
 }).listen(PORT);
 
+server.on('end', () => {
+  console.log('Connection terminated');
+});
+
 /* FUNCTIONS */
 
 // function processPostRequest(request, route )
