@@ -10,7 +10,7 @@ let errorPath = '/error.html';
 /* FUNCTION */
 
 // will take in the route requested and output the correct file
-function getFiles(request, response, route) {
+function getFiles(response, route) {
   // handles content type
   // console.log('test', request.headers.accept);
   if (route === '/css/styles.css') type = 'text/css';

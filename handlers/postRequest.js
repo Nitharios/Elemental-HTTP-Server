@@ -12,23 +12,26 @@ let publicDir = './public/';
 
 /* FUNCTIONS */
 
-function postRequest(request, response, data) {
+function postRequest(request, response) {
 
-  processPostRequest(request, response, data);  
+  processPostRequest(request, response);  
   // fs.writeFile()
 }
 
-function processPostRequest(request, response, data) {
+function processPostRequest(request, response) {
   // handles the body of data attached to POST request header
   // ASYNC so will continue to next function while still processing
   request.on('data', (data) => {
     // passes data to a variable as a string (otherwise it is a buffer)
     formData = data.toString();
+
     // parses data into a collection of key and value pairs
     parsedData = qs.parse(formData);
+
     // sets path
     fileName = parsedData.elementName.toLowerCase() + '.html';
     newPath = path.join(publicDir, fileName);
+    
     // sets HTML body
     htmlBody = `<!DOCTYPE html>
 <html lang="en">
