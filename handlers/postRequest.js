@@ -13,12 +13,6 @@ let publicDir = './public/';
 
 /* FUNCTIONS */
 
-// function postRequest(request, response) {
-
-//   processPostRequest(request, response);  
-//   // fs.writeFile()
-// }
-
 function postRequest(request, response) {
   // handles the body of data attached to POST request header
   // ASYNC so will continue to next function while still processing
@@ -44,21 +38,7 @@ function postRequest(request, response) {
         newPath = path.join(publicDir, fileName);
 
         // sets HTML body
-        htmlBody = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>The Elements - ${parsedData.elementName}</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-  <h1>${parsedData.elementName}</h1>
-  <h2>${parsedData.elementSymbol}</h2>
-  <h3>Atomic number ${parsedData.elementAtomicNumber}</h3>
-  <p>${parsedData.elementDescription}</p>
-  <p><a href="/">back</a></p>
-</body>
-</html>`;
+        htmlBody = htmlGenerator(parsedData);
 
         fs.writeFile(newPath, htmlBody, (err) => {
           if (err) throw err;
@@ -77,6 +57,24 @@ function postRequest(request, response) {
       }
     });
   });
+}
+
+function htmlGenerator(data) {
+return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elements - ${parsedData.elementName}</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>${parsedData.elementName}</h1>
+  <h2>${parsedData.elementSymbol}</h2>
+  <h3>Atomic number ${parsedData.elementAtomicNumber}</h3>
+  <p>${parsedData.elementDescription}</p>
+  <p><a href="/">back</a></p>
+</body>
+</html>`;
 }
 
 module.exports = postRequest;
