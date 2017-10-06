@@ -4,6 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const qs = require('querystring');
+const getRequest = require('./getRequest');
 
 let fileName, formData, htmlBody, newPath, parsedData;
 let type = 'application/json';
@@ -12,13 +13,13 @@ let publicDir = './public/';
 
 /* FUNCTIONS */
 
+// function postRequest(request, response) {
+
+//   processPostRequest(request, response);  
+//   // fs.writeFile()
+// }
+
 function postRequest(request, response) {
-
-  processPostRequest(request, response);  
-  // fs.writeFile()
-}
-
-function processPostRequest(request, response) {
   // handles the body of data attached to POST request header
   // ASYNC so will continue to next function while still processing
   request.on('data', (data) => {
@@ -28,12 +29,22 @@ function processPostRequest(request, response) {
     // parses data into a collection of key and value pairs
     parsedData = qs.parse(formData);
 
-    // sets path
+    // boron.html
     fileName = parsedData.elementName.toLowerCase() + '.html';
-    newPath = path.join(publicDir, fileName);
     
-    // sets HTML body
-    htmlBody = `<!DOCTYPE html>
+    fs.stat(`./public/${fileName}`, (err, stats) => {
+      if (err) throw err;
+
+      if (stats.isFile()) {
+        getRequest(response, 'error');
+
+      } else {
+
+        // public/boron.html
+        newPath = path.join(publicDir, fileName);
+
+        // sets HTML body
+        htmlBody = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -49,19 +60,21 @@ function processPostRequest(request, response) {
 </body>
 </html>`;
 
-    fs.writeFile(newPath, htmlBody, (err) => {
-      if (err) throw err;
+        fs.writeFile(newPath, htmlBody, (err) => {
+          if (err) throw err;
 
-      response.writeHead(200, {
-        'Content-Type' : `${type}`
-      });
+          response.writeHead(200, {
+            'Content-Type' : `${type}`
+          });
 
-      response.write("{'success' : true}", (err) => {
-        if (err) throw err;
-  
-        console.log('New element added!');
-        response.end();
-      });
+          response.write("{'success' : true}", (err) => {
+            if (err) throw err;
+      
+            console.log('New element added!');
+            response.end();
+          });
+        });
+      }
     });
   });
 }
