@@ -12,6 +12,7 @@ let publicDir = './public/';
 /* FUNCTIONS */
 
 function postRequest(request, response, data) {
+
   processPostRequest(request, response, data);  
   // fs.writeFile()
 }
@@ -24,9 +25,10 @@ function processPostRequest(request, response, data) {
     formData = data.toString();
     // parses data into a collection of key and value pairs
     parsedData = qs.parse(formData);
-
+    // sets path
     fileName = parsedData.elementName.toLowerCase() + '.html';
     newPath = path.join(publicDir, fileName);
+    // sets HTML body
     htmlBody = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,12 +44,13 @@ function processPostRequest(request, response, data) {
   <p><a href="/">back</a></p>
 </body>
 </html>`;
+
     fs.writeFile(newPath, htmlBody, (err) => {
       if (err) throw err;
       console.log('New element added!');
+      response.end();
     });
 
-    response.end();
   });
 }
 
