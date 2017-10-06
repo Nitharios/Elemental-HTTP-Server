@@ -6,6 +6,7 @@ const path = require('path');
 const qs = require('querystring');
 
 let fileName, formData, htmlBody, newPath, parsedData;
+let type = 'application/json';
 // __dirname
 let publicDir = './public/';
 
@@ -47,10 +48,18 @@ function processPostRequest(request, response, data) {
 
     fs.writeFile(newPath, htmlBody, (err) => {
       if (err) throw err;
-      console.log('New element added!');
-      response.end();
-    });
 
+      response.writeHead(200, {
+        'Content-Type' : `${type}`
+      });
+
+      response.write("{'success' : true}", (err) => {
+        if (err) throw err;
+  
+        console.log('New element added!');
+        response.end();
+      });
+    });
   });
 }
 
