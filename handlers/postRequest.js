@@ -5,9 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const qs = require('querystring');
 
-let formData, parsedData, newPath;
+let fileName, formData, htmlBody, newPath, parsedData;
 // __dirname
-let publicDir = '../public/';
+let publicDir = './public/';
 
 /* FUNCTIONS */
 
@@ -21,13 +21,31 @@ function processPostRequest(request, response, data) {
   // ASYNC so will continue to next function while still processing
   request.on('data', (data) => {
     // passes data to a variable as a string (otherwise it is a buffer)
-    formData = data.toString().toLowerCase();
+    formData = data.toString();
     // parses data into a collection of key and value pairs
     parsedData = qs.parse(formData);
-    console.log(parsedData);
 
-    // fs.writeFile();
-
+    fileName = parsedData.elementName.toLowerCase() + '.html';
+    newPath = path.join(publicDir, fileName);
+    htmlBody = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elements - ${parsedData.elementName}</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>${parsedData.elementName}</h1>
+  <h2>${parsedData.elementSymbol}</h2>
+  <h3>Atomic number ${parsedData.elementAtomicNumber}</h3>
+  <p>${parsedData.elementDescription}</p>
+  <p><a href="/">back</a></p>
+</body>
+</html>`;
+    fs.writeFile(newPath, htmlBody, (err) => {
+      if (err) throw err;
+      console.log('New element added!');
+    });
 
     response.end();
   });
