@@ -12,9 +12,7 @@ const server = http.createServer((req, res) => {
   console.log('Request Initiated');
 
   uri = req.url.toLowerCase();
-  
-  if (uri === '/elements') method = req.method;
-  else method = 'GET';
+  method = req.method;
 
   switch (method) {
     case 'HEAD':
